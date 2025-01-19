@@ -1,3 +1,6 @@
 import { Sequelize } from "sequelize";
 
-export const sequalize=new Sequelize('connection string')
+export const sequalize=new Sequelize('database','username','password',{
+    host:"localhost",
+    dialect:'mysql'
+})
