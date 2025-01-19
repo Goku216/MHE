@@ -1,6 +1,4 @@
+import { configDotenv } from "dotenv";
 import { Sequelize } from "sequelize";
-
-export const sequelize = new Sequelize('database', 'username', 'password', {
-    host: "localhost",
-    dialect: 'mysql'
-});
+configDotenv()
+export const sequelize = new Sequelize(process.env.DATABASE_CONNECTION_URI);
