@@ -1,4 +1,4 @@
-import { User } from "../../db/models";
+import { User } from "../../db/models.js";
 import bcrypt from "bcrypt"
 
 export async function userRegister(req,res) {
