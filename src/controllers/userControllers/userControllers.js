@@ -1,3 +1,6 @@
+import { User } from "../../db/models";
+import bcrypt from "bcrypt"
+
 export async function userRegister(req,res) {
     try {
         const {username,email,password,isAdmin}=req.body
@@ -18,7 +21,16 @@ export async function userRegister(req,res) {
         })
        }
 
-       return res.status(400).json({
+       const hashedPassword=await bcrypt.hash(password,10)
+        
+       await User.create({
+        username,
+        email,
+        password:hashedPassword,
+        isAdmin
+       })
+
+       return res.json({
         username,
         email,
         password,
