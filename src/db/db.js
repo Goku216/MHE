@@ -1,7 +1,6 @@
 import { Sequelize } from "sequelize";
 
-export const sequalize=new Sequelize('database','username','password',{
-    host:"localhost",
-    dialect:'mysql',
-    logging:false
-})
+export const sequelize = new Sequelize('database', 'username', 'password', {
+    host: "localhost",
+    dialect: 'mysql'
+});
