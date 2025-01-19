@@ -1,4 +1,4 @@
-export async function userControllers(req,res) {
+export async function userRegister(req,res) {
     try {
         const {username,email,password,isAdmin}=req.body
         console.log(username,email,password,isAdmin);
