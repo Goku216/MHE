@@ -1,21 +1,30 @@
-import { configDotenv } from "dotenv";
-import express from "express";
-import { sequelize } from "./db/db.js";  // Correct spelling
-import { userRouter } from "./routes/userRoutes/userRoutes.js";
-configDotenv();
+import dotenv from 'dotenv';  
+import express from 'express';
+import { sequelize } from './db/db.js';  
+import { userRouter } from './routes/userRoutes/userRoutes.js';
 
-const app = express();  // No need for `new`
-const port = process.env.PORT || 3000;  // Correct port assignment
-app.use(express.json())
-app.use('/api',userRouter)
 
-try {
-  await sequelize.authenticate();
-  console.log("Database connection established...");
-} catch (err) {
-  console.log("Failed to connect to database", err);
-}
+dotenv.config();
 
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use('/api', userRouter);  // Mount user routes at /api
+
+// Database connection
+const initializeDatabase = async () => {
+  try {
+    await sequelize.authenticate();  
+    console.log("Database connection established...");
+  } catch (err) {
+    console.error("Failed to connect to database", err);
+  }
+};
+
+initializeDatabase();  
+
+// Start the server
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
