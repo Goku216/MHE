@@ -1,0 +1,2 @@
+register: /api/user/register
+login: /api/user/login
