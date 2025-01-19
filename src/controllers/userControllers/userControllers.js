@@ -1,5 +1,9 @@
+import { configDotenv } from "dotenv";
 import { User } from "../../db/models.js";
 import bcrypt from "bcrypt"
+
+configDotenv()
+
 
 export async function userRegister(req,res) {
     try {
