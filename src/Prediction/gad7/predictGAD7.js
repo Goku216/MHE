@@ -1,4 +1,13 @@
 import { spawn } from "child_process";
+import { fileURLToPath } from "url";
+import path from "path";
+
+// Get the current file's directory path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Use the correct script path
+const scriptPath = path.join(__dirname, "gad7predict.py");
 
 /**
  * Validates input data for GAD-7 questionnaire
@@ -34,7 +43,7 @@ export function predictGAD7(inputData) {
       validateInput(inputData);
 
       const pythonProcess = spawn("python", [
-        "gad7predict.py",
+        scriptPath,
         JSON.stringify(inputData),
       ]);
 

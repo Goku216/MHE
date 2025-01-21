@@ -4,6 +4,12 @@ import joblib
 import pandas as pd
 import logging
 import traceback
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get script's directory
+MODEL_PATH = os.path.join(BASE_DIR, 'gad7_model.joblib')
+SCALER_PATH = os.path.join(BASE_DIR, 'gad7_scaler.joblib')
+ANXIETY_MAPPING_PATH = os.path.join(BASE_DIR, 'anxiety_mapping.joblib')
 
 # Set up logging
 logging.basicConfig(
@@ -13,9 +19,9 @@ logging.basicConfig(
 
 # Load artifacts at the module level
 try:
-    MODEL = joblib.load('gad7_model.joblib')
-    SCALER = joblib.load('gad7_scaler.joblib')
-    ANXIETY_MAPPING = joblib.load('anxiety_mapping.joblib')
+    MODEL = joblib.load(MODEL_PATH)
+    SCALER = joblib.load(SCALER_PATH)
+    ANXIETY_MAPPING = joblib.load(ANXIETY_MAPPING_PATH)
     logging.info("GAD-7 model artifacts loaded successfully")
 except Exception as e:
     logging.error(f"Failed to load GAD-7 artifacts: {e}")

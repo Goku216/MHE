@@ -27,7 +27,7 @@ export async function getPHQ9(req, res) {
 export async function getGAD7(req, res) {
   try {
     const questions = await Question.findAll({
-      where: { questionnaire_id: "phq9" },
+      where: { questionnaire_id: "gad7" },
       order: [["order_index", "ASC"]],
     });
     res.json({ success: true, data: questions });
