@@ -13,9 +13,9 @@ const port = process.env.PORT || 3000;
 // Enable CORS for all requests
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow requests from your frontend
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Dynamically set for deployment
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // Allow cookies if needed
+    credentials: true,
   })
 );
 
@@ -36,6 +36,6 @@ const initializeDatabase = async () => {
 
 initializeDatabase();
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server is listening on port ${port}`);
 });
