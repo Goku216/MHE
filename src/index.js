@@ -9,12 +9,20 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173", // Add localhost for development
+];
 
-// Enable CORS for all requests
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Dynamically set for deployment
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -36,6 +44,6 @@ const initializeDatabase = async () => {
 
 initializeDatabase();
 
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
