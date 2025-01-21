@@ -1,4 +1,13 @@
-const { spawn } = require("child_process");
+import { spawn } from "child_process";
+import { fileURLToPath } from "url";
+import path from "path";
+
+// Get the current file's directory path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Use the correct script path
+const scriptPath = path.join(__dirname, "predict.py");
 
 function validateInput(inputData) {
   if (!Array.isArray(inputData) || inputData.length !== 9) {
@@ -9,7 +18,7 @@ function validateInput(inputData) {
   }
 }
 
-function predictPHQ9(inputData) {
+export function predictPHQ9(inputData) {
   return new Promise((resolve, reject) => {
     try {
       validateInput(inputData);
@@ -18,7 +27,7 @@ function predictPHQ9(inputData) {
     }
 
     const pythonProcess = spawn("python", [
-      "predict.py",
+      scriptPath,
       JSON.stringify(inputData),
     ]);
 
@@ -74,5 +83,3 @@ async function example() {
     console.error("Prediction failed:", error);
   }
 }
-
-module.exports = { predictPHQ9 };

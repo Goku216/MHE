@@ -78,11 +78,10 @@ export async function userLogin(req, res) {
       });
     }
 
-    const userId = user.userid;
     const isAdmin = user.isAdmin;
 
     const token = jwt.sign(
-      { userId: user.id, isAdmin },
+      { userId: user.userid, isAdmin },
       isAdmin ? process.env.JWT_SECRET_ADMIN : process.env.JWT_SECRET_USER,
       { expiresIn: "1h" }
     );
@@ -90,7 +89,6 @@ export async function userLogin(req, res) {
     return res.json({
       token,
       isAdmin,
-      userId,
     });
   } catch (error) {
     return res.json({

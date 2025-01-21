@@ -4,6 +4,12 @@ import joblib
 import pandas as pd
 import logging
 import traceback
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get script's directory
+MODEL_PATH = os.path.join(BASE_DIR, 'phq9_model.joblib')
+SCALER_PATH = os.path.join(BASE_DIR, 'scaler.joblib')
+SEVERITY_MAPPING_PATH = os.path.join(BASE_DIR, 'severity_mapping.joblib')
 
 
 
@@ -13,9 +19,9 @@ logging.basicConfig(level=logging.INFO)
 # Load artifacts at the module level
 logging.info("Loading model artifacts...")
 try:
-    MODEL = joblib.load('phq9_model.joblib')
-    SCALER = joblib.load('scaler.joblib')
-    SEVERITY_MAPPING = joblib.load('severity_mapping.joblib')
+    MODEL = joblib.load(MODEL_PATH)
+    SCALER = joblib.load(SCALER_PATH)
+    SEVERITY_MAPPING = joblib.load(SEVERITY_MAPPING_PATH)
     logging.info("Artifacts loaded successfully.")
 except Exception as e:
     logging.error(f"Failed to load artifacts: {e}")

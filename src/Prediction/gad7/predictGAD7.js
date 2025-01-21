@@ -1,4 +1,4 @@
-const { spawn } = require("child_process");
+import { spawn } from "child_process";
 
 /**
  * Validates input data for GAD-7 questionnaire
@@ -14,7 +14,11 @@ function validateInput(inputData) {
     throw new Error("Input array must contain exactly 7 scores for GAD-7");
   }
 
-  if (!inputData.every(value => typeof value === "number" && value >= 0 && value <= 3)) {
+  if (
+    !inputData.every(
+      (value) => typeof value === "number" && value >= 0 && value <= 3
+    )
+  ) {
     throw new Error("All scores must be numbers between 0 and 3");
   }
 }
@@ -24,12 +28,15 @@ function validateInput(inputData) {
  * @param {Array<number>} inputData - Array of 7 GAD-7 scores
  * @returns {Promise<Object>} Prediction results
  */
-function predictGAD7(inputData) {
+export function predictGAD7(inputData) {
   return new Promise((resolve, reject) => {
     try {
       validateInput(inputData);
 
-      const pythonProcess = spawn("python", ["gad7predict.py", JSON.stringify(inputData)]);
+      const pythonProcess = spawn("python", [
+        "gad7predict.py",
+        JSON.stringify(inputData),
+      ]);
 
       let result = "";
       let stderrOutput = "";
@@ -55,19 +62,27 @@ function predictGAD7(inputData) {
         clearTimeout(timeout);
 
         if (code !== 0) {
-          return reject(new Error(`Python process exited with code ${code}. Stderr: ${stderrOutput}`));
+          return reject(
+            new Error(
+              `Python process exited with code ${code}. Stderr: ${stderrOutput}`
+            )
+          );
         }
 
         try {
           const prediction = JSON.parse(result);
 
-          if (prediction.status === 'error') {
+          if (prediction.status === "error") {
             return reject(new Error(prediction.message));
           }
 
           resolve(prediction);
         } catch (parseError) {
-          reject(new Error(`Failed to parse prediction result: ${parseError.message}`));
+          reject(
+            new Error(
+              `Failed to parse prediction result: ${parseError.message}`
+            )
+          );
         }
       });
 
@@ -76,7 +91,6 @@ function predictGAD7(inputData) {
         clearTimeout(timeout);
         reject(new Error(`Failed to spawn Python process: ${error.message}`));
       });
-
     } catch (validationError) {
       reject(validationError);
     }
@@ -93,10 +107,3 @@ async function example() {
     console.error("Prediction failed:", error);
   }
 }
-
-// Run example if called directly
-if (require.main === module) {
-  example();
-}
-
-module.exports = { predictGAD7 };

@@ -73,16 +73,13 @@ export const Question = sequelize.define(
   {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
       primaryKey: true,
+      autoIncrement: true,
     },
     questionnaire_id: {
       type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: "questionnaires",
-        key: "id",
-      },
+      defaultValue: "",
     },
     text: {
       type: DataTypes.TEXT,
@@ -92,15 +89,19 @@ export const Question = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    weight: {
-      type: DataTypes.INTEGER,
+    created_at: {
+      type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: DataTypes.NOW,
+    },
+    options: {
+      type: DataTypes.JSON,
+      allowNull: false,
     },
   },
   {
-    timestamps: true,
     tableName: "questions",
+    timestamps: false, // Disable automatic timestamp fields (createdAt, updatedAt)
   }
 );
 
