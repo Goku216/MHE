@@ -68,7 +68,7 @@ def predict(input_data):
         logging.info(f"Severity level: {severity}")
 
         return json.dumps({
-            'status': 'success',
+            'status': 'completed',
             'raw_prediction': prediction.tolist()[0],
             'severity_level': severity
         })

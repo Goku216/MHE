@@ -5,6 +5,7 @@ import {
   Questionnaire,
   Result,
 } from "../../db/models.js";
+import { Op } from "sequelize";
 
 configDotenv();
 
@@ -12,18 +13,53 @@ export async function getStats(req, res) {
   try {
     const userId = req.params.id;
 
-    // Fetch user data
     const user = await User.findOne({ where: { userid: userId } });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Fetch user's evaluation sessions with related questionnaire and results
+    // Fetch user's evaluation sessions with related data
     const sessions = await EvaluationSession.findAll({
-      where: { user_id: userId },
+      where: {
+        user_id: userId,
+        completed_at: { [Op.ne]: null }, // Only include completed sessions
+      },
       include: [{ model: Questionnaire }, { model: Result }],
       order: [["completed_at", "DESC"]],
     });
+
+    // Calculate streak
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < sessions.length; i++) {
+      const sessionDate = new Date(sessions[i].completed_at);
+      sessionDate.setHours(0, 0, 0, 0);
+
+      if (i === 0) {
+        // Check if the latest session is from today or yesterday
+        const daysDiff = Math.floor(
+          (today - sessionDate) / (1000 * 60 * 60 * 24)
+        );
+        if (daysDiff > 1) break;
+        streak++;
+        continue;
+      }
+
+      const prevSessionDate = new Date(sessions[i - 1].completed_at);
+      prevSessionDate.setHours(0, 0, 0, 0);
+
+      // Check if sessions are on consecutive days
+      const daysBetween = Math.floor(
+        (prevSessionDate - sessionDate) / (1000 * 60 * 60 * 24)
+      );
+      if (daysBetween === 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
 
     // Format recent tests
     let recentTests = sessions
@@ -48,7 +84,6 @@ export async function getStats(req, res) {
       .filter((test) => test !== null)
       .slice(0, 3);
 
-    // Ensure it's always an array
     if (recentTests.length === 0) {
       recentTests = [
         {
@@ -84,7 +119,7 @@ export async function getStats(req, res) {
         : "Not Available",
       stats: {
         testsCompleted: sessions.length,
-        streak: 5, // Placeholder, logic can be added
+        streak,
         latestScore: latestTest.score,
         severity: latestTest.severity,
       },
@@ -95,6 +130,22 @@ export async function getStats(req, res) {
     res.json(responseData);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export async function getUsername(req, res) {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findOne({ where: { userid: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ username: user.username, email: user.email });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

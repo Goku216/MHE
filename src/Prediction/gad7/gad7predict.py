@@ -67,7 +67,7 @@ def predict(input_data):
         anxiety_level = reversed_mapping.get(prediction[0], "Unmapped Level")
 
         return json.dumps({
-            'status': 'success',
+            'status': 'completed',
             'raw_prediction': prediction.tolist()[0],
             'anxiety_level': anxiety_level,
             'total_score': total_score,

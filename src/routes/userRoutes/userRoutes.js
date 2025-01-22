@@ -14,7 +14,11 @@ import {
 } from "../../controllers/userControllers/evaluationSessionController.js";
 
 import { getResult } from "../../controllers/userControllers/resultController.js";
-import { getStats } from "../../controllers/userControllers/getUserStats.js";
+import {
+  getStats,
+  getUsername,
+} from "../../controllers/userControllers/getUserStats.js";
+import { changeSettings } from "../../controllers/userControllers/changeUserSettings.js";
 
 export const userRouter = Router();
 
@@ -24,6 +28,8 @@ userRouter.get("/user/phq9", getPHQ9);
 userRouter.get("/user/gad7", getGAD7);
 userRouter.post("/user/evaluation-sessions", createSession);
 userRouter.post("/user/evaluate", getResult);
+userRouter.get("/user/:id/getusername", getUsername);
 userRouter.get("/user/:id/getstats", getStats);
 userRouter.patch("/user/:id/complete-session", completeSession);
 userRouter.post("/user/:id/submit-answers", getResult);
+userRouter.put("/user/:id/changesettings", changeSettings);
