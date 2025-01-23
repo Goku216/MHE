@@ -1,6 +1,7 @@
 import { configDotenv } from "dotenv";
 import { User } from "../../db/models.js";
 import bcrypt from "bcrypt";
+import { Op } from "sequelize";
 
 configDotenv();
 
@@ -10,28 +11,35 @@ export async function changeSettings(req, res) {
     const userId = req.params.id;
 
     const user = await User.findOne({ where: { userid: userId } });
-
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if username is unique
-    if (username && username !== user.username) {
-      const existingUser = await User.findOne({ where: { username } });
-      if (existingUser && existingUser.userid !== userId) {
-        return res.status(400).json({ error: "Username already taken" });
+    // Check for unique username and email in a single query
+    if (username !== user.username || email !== user.email) {
+      const existingUser = await User.findOne({
+        where: {
+          [Op.or]: [{ username }, { email }],
+          userid: { [Op.ne]: userId },
+        },
+      });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "Username or Email already taken" });
       }
     }
 
-    // Check if email is unique
-    if (email && email !== user.email) {
-      const existingEmail = await User.findOne({ where: { email } });
-      if (existingEmail && existingEmail.userid !== userId) {
-        return res.status(400).json({ error: "Email already in use" });
-      }
+    // Password update validation
+    if (
+      (currentPassword && !newPassword) ||
+      (!currentPassword && newPassword)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Both current and new passwords are required" });
     }
 
-    // Handle password update
     if (currentPassword && newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
@@ -39,13 +47,9 @@ export async function changeSettings(req, res) {
       }
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(newPassword, salt);
-    } else if (newPassword || currentPassword) {
-      return res
-        .status(400)
-        .json({ error: "Both current and new passwords are required" });
     }
 
-    // Update fields
+    // Update user fields
     if (username) user.username = username;
     if (email) user.email = email;
 
@@ -53,6 +57,6 @@ export async function changeSettings(req, res) {
     res.json({ message: "Profile updated successfully" });
   } catch (error) {
     console.error("Error updating profile:", error);
-    res.status(500).json({ error: error.message || "Server error" });
+    res.status(500).json({ error: "Server error. Please try again later." });
   }
 }
