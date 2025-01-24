@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  "http://localhost:5173", // Add localhost for development
+  "http://localhost:5174", // Add localhost for development
 ];
 
 app.use(
@@ -23,10 +23,12 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Add all the HTTP methods you expect
+    allowedHeaders: ["Content-Type", "Authorization"], // Add any headers that your client is sending
     credentials: true,
   })
 );
-
+app.options("*", cors());
 app.use(express.json());
 app.use("/api", userRouter); // Mount user routes at /api
 app.use("/api", adminRouter);
