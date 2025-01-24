@@ -30,37 +30,45 @@ export async function getStats(req, res) {
 
     // Calculate streak
     let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    for (let i = 0; i < sessions.length; i++) {
-      const sessionDate = new Date(sessions[i].completed_at);
-      sessionDate.setHours(0, 0, 0, 0);
+    if (sessions.length > 0) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      if (i === 0) {
-        // Check if the latest session is from today or yesterday
-        const daysDiff = Math.floor(
-          (today - sessionDate) / (1000 * 60 * 60 * 24)
-        );
-        if (daysDiff > 1) break;
-        streak++;
-        continue;
-      }
-
-      const prevSessionDate = new Date(sessions[i - 1].completed_at);
-      prevSessionDate.setHours(0, 0, 0, 0);
-
-      // Check if sessions are on consecutive days
-      const daysBetween = Math.floor(
-        (prevSessionDate - sessionDate) / (1000 * 60 * 60 * 24)
+      // Sort sessions by date in descending order (latest first)
+      sessions.sort(
+        (a, b) => new Date(b.completed_at) - new Date(a.completed_at)
       );
-      if (daysBetween === 1) {
-        streak++;
-      } else {
-        break;
+
+      for (let i = 0; i < sessions.length; i++) {
+        const sessionDate = new Date(sessions[i].completed_at);
+        sessionDate.setHours(0, 0, 0, 0);
+
+        if (i === 0) {
+          // Check if the latest session is from today or yesterday
+          const daysDiff = Math.floor(
+            (today - sessionDate) / (1000 * 60 * 60 * 24)
+          );
+          if (daysDiff > 1) break;
+          streak++;
+          continue;
+        }
+
+        const prevSessionDate = new Date(sessions[i - 1].completed_at);
+        prevSessionDate.setHours(0, 0, 0, 0);
+
+        // Check if sessions are on consecutive days
+        const daysBetween = Math.floor(
+          (prevSessionDate - sessionDate) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysBetween === 1) {
+          streak++;
+        } else if (daysBetween > 1) {
+          break;
+        }
       }
     }
-
     // Format recent tests
     let recentTests = sessions
       .map((session) => {

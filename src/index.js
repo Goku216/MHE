@@ -23,7 +23,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Add all the HTTP methods you expect
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // Add all the HTTP methods you expect
     allowedHeaders: ["Content-Type", "Authorization"], // Add any headers that your client is sending
     credentials: true,
   })
