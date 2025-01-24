@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.js",
-    "start": "pip install -r requirements.txt && npm run dev"
+    "start": "npm run dev"
   },
   "type": "module",
   "keywords": [],
