@@ -6,7 +6,12 @@ import {
   deleteQuestionnaire,
 } from "../../controllers/adminControllers/questionnaireController.js";
 import { getAllUsers } from "../../controllers/adminControllers/getUsersController.js";
-import { getAdmin } from "../../controllers/adminControllers/getAdminStats.js";
+import {
+  getAdmin,
+  updateAdminStats,
+  updateAdminPass,
+  deleteUser,
+} from "../../controllers/adminControllers/getAdminStats.js";
 
 export const adminRouter = Router();
 
@@ -16,3 +21,6 @@ adminRouter.put("/admin/questionnaires/:id", updateQuestionnaire);
 adminRouter.delete("/admin/questionnaires/:id", deleteQuestionnaire);
 adminRouter.get("/admin/getusers", getAllUsers);
 adminRouter.get("/admin/getadmin", getAdmin);
+adminRouter.put("/admin/updatestats", updateAdminStats);
+adminRouter.put("/admin/updatepassword", updateAdminPass);
+adminRouter.delete("/admin/deleteuser/:id", deleteUser);
