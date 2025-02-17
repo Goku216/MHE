@@ -12,6 +12,7 @@ import {
   updateAdminPass,
   deleteUser,
 } from "../../controllers/adminControllers/getAdminStats.js";
+import { sendEmail } from "../../controllers/adminControllers/sendEmail.js";
 
 export const adminRouter = Router();
 
@@ -24,3 +25,4 @@ adminRouter.get("/admin/getadmin", getAdmin);
 adminRouter.put("/admin/updatestats", updateAdminStats);
 adminRouter.put("/admin/updatepassword", updateAdminPass);
 adminRouter.delete("/admin/deleteuser/:id", deleteUser);
+adminRouter.post("/admin/sendemail", sendEmail);

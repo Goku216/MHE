@@ -40,9 +40,7 @@ export async function userRegister(req, res) {
       isAdmin,
     });
   } catch (error) {
-    return res.json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 }
 
@@ -91,8 +89,6 @@ export async function userLogin(req, res) {
       isAdmin,
     });
   } catch (error) {
-    return res.json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 }
